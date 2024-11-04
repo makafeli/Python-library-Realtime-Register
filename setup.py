@@ -6,8 +6,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="realtimeregister",
     version="1.0.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Yasin Boelhouwer",
+    author_email="info@yasin.nu",
     description="Python SDK for Realtime Register API",
     long_description=long_description,
     long_description_content_type="text/markdown",
