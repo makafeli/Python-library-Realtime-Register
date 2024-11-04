@@ -1,13 +1,45 @@
 from typing import Dict, Any, List, Optional
 from ..models.domain import Domain
 
+
 class DomainsApi:
     def __init__(self, client):
         self.client = client
 
-    def list(self, page: int = 1, limit: int = 25) -> Dict[str, Any]:
-        """List domains"""
-        return self.client._request('GET', 'domains', params={'page': page, 'limit': limit})
+    def list(
+            self,
+            limit: int = 50,
+            offset: int = 0,
+            sort: Optional[str] = None,
+            order: Optional[str] = None,
+            **filters: Any
+    ) -> Dict[str, Any]:
+        """
+        List domains with optional filtering and sorting
+
+        Args:
+            limit: Number of results per page (default: 50)
+            offset: Starting position (default: 0)
+            sort: Field to sort by
+            order: Sort order ('asc' or 'desc')
+            **filters: Additional filter parameters
+                - domainName: Domain name filter
+                - customer: Customer handle
+                - status: Domain status
+                - registrant: Registrant handle
+        """
+        params = {
+            "limit": limit,
+            "offset": offset,
+            **filters
+        }
+
+        if sort:
+            params["sort"] = sort
+        if order:
+            params["order"] = order
+
+        return self.client._request('GET', 'domains', params=params)
 
     def get(self, domain: str) -> Domain:
         """Get domain details"""
@@ -19,33 +51,24 @@ class DomainsApi:
         return self.client._request('GET', f'domains/{domain}/check')
 
     def register(
-        self,
-        domain: str,
-        registrant: Dict[str, Any],
-        period: int = 1,
-        nameservers: Optional[List[Dict[str, Any]]] = None,
-        tech_contact: Optional[Dict[str, Any]] = None,
-        admin_contact: Optional[Dict[str, Any]] = None,
-        billing_contact: Optional[Dict[str, Any]] = None,
-        auth_code: Optional[str] = None,
-        properties: Optional[Dict[str, Any]] = None
+            self,
+            domain: str,
+            customer: str,
+            registrant: str,
+            contacts: List[Dict[str, str]],
+            nameservers: List[str],
+            period: int = 1,
+            properties: Optional[Dict[str, Any]] = None
     ) -> Domain:
-        """Register a domain"""
+        """Register a new domain"""
         data = {
+            'customer': customer,
             'registrant': registrant,
+            'contacts': contacts,
+            'ns': nameservers,
             'period': period
         }
 
-        if nameservers:
-            data['nameservers'] = nameservers
-        if tech_contact:
-            data['techContact'] = tech_contact
-        if admin_contact:
-            data['adminContact'] = admin_contact
-        if billing_contact:
-            data['billingContact'] = billing_contact
-        if auth_code:
-            data['authCode'] = auth_code
         if properties:
             data['properties'] = properties
 
@@ -53,27 +76,18 @@ class DomainsApi:
         return Domain.from_dict(response)
 
     def update(
-        self,
-        domain: str,
-        nameservers: Optional[List[Dict[str, Any]]] = None,
-        tech_contact: Optional[Dict[str, Any]] = None,
-        admin_contact: Optional[Dict[str, Any]] = None,
-        billing_contact: Optional[Dict[str, Any]] = None,
-        auth_code: Optional[str] = None,
-        properties: Optional[Dict[str, Any]] = None
+            self,
+            domain: str,
+            contacts: Optional[List[Dict[str, str]]] = None,
+            nameservers: Optional[List[str]] = None,
+            properties: Optional[Dict[str, Any]] = None
     ) -> Domain:
         """Update domain details"""
         data = {}
+        if contacts:
+            data['contacts'] = contacts
         if nameservers:
-            data['nameservers'] = nameservers
-        if tech_contact:
-            data['techContact'] = tech_contact
-        if admin_contact:
-            data['adminContact'] = admin_contact
-        if billing_contact:
-            data['billingContact'] = billing_contact
-        if auth_code:
-            data['authCode'] = auth_code
+            data['ns'] = nameservers
         if properties:
             data['properties'] = properties
 
@@ -83,65 +97,3 @@ class DomainsApi:
     def delete(self, domain: str) -> None:
         """Delete a domain"""
         self.client._request('DELETE', f'domains/{domain}')
-
-    def renew(
-        self,
-        domain: str,
-        period: int = 1,
-        properties: Optional[Dict[str, Any]] = None
-    ) -> Domain:
-        """Renew a domain"""
-        data = {'period': period}
-        if properties:
-            data['properties'] = properties
-
-        response = self.client._request('POST', f'domains/{domain}/renew', data=data)
-        return Domain.from_dict(response)
-
-    def restore(
-        self,
-        domain: str,
-        properties: Optional[Dict[str, Any]] = None
-    ) -> Domain:
-        """Restore a domain"""
-        data = {}
-        if properties:
-            data['properties'] = properties
-
-        response = self.client._request('POST', f'domains/{domain}/restore', data=data)
-        return Domain.from_dict(response)
-
-    def query(
-        self,
-        query: str,
-        status: Optional[str] = None,
-        registrar: Optional[str] = None,
-        page: int = 1,
-        limit: int = 25
-    ) -> Dict[str, Any]:
-        """Search domains"""
-        params = {
-            'q': query,
-            'page': page,
-            'limit': limit
-        }
-        if status:
-            params['status'] = status
-        if registrar:
-            params['registrar'] = registrar
-            
-        return self.client._request('GET', 'domains/query', params=params)
-
-    def update_registrant(
-        self,
-        domain: str,
-        registrant: Dict[str, Any],
-        properties: Optional[Dict[str, Any]] = None
-    ) -> Domain:
-        """Update domain registrant"""
-        data = {'registrant': registrant}
-        if properties:
-            data['properties'] = properties
-
-        response = self.client._request('PUT', f'domains/{domain}/registrant', data=data)
-        return Domain.from_dict(response)
