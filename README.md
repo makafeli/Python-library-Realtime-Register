@@ -1,4 +1,4 @@
-![Realtime Register](https://www.realtimeregister.com/assets/img/logo.svg)
+![Realtime Register]([https://www.realtimeregister.com/assets/img/logo.svg](https://realtimeregister.com/static/images/logo.svg))
 
 # Realtime Register Python SDK
 
