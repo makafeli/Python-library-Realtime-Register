@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="realtimeregister",
-    version="1.0.0",
+    version="1.0.1",
     author="Makafeli",
     author_email="info@yasin.nu",
     description="Python SDK for Realtime Register API",
