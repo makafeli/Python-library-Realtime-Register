@@ -1,4 +1,4 @@
-![Realtime Register](https://www.realtimeregister.com/assets/img/logo.svg)
+<img src="https://realtimeregister.com/static/images/logo.svg" width="100" height="100">
 
 # Realtime Register Python SDK
 
@@ -303,7 +303,3 @@ except RealtimeRegisterException as e:
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
