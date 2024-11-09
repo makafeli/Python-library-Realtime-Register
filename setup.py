@@ -5,13 +5,13 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="realtimeregister",
-    version="1.0.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    version="1.0.1",
+    author="Makafeli",
+    author_email="info@yasin.nu",
     description="Python SDK for Realtime Register API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/realtimeregister-python",
+    url="https://github.com/makafeli/Python-library-Realtime-Register",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
